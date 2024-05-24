@@ -115,8 +115,8 @@ const char * const osdTimerSourceNames[] = {
     "ON/ARM   "
 };
 
-#define OSD_LOGO_ROWS 4
-#define OSD_LOGO_COLS 24
+#define OSD_LOGO_ROWS 9
+#define OSD_LOGO_COLS 40
 
 // Things in both OSD and CMS
 
@@ -467,12 +467,42 @@ void pgResetFn_osdElementConfig(osdElementConfig_t *osdElementConfig)
 static void osdDrawLogo(int x, int y, displayPortSeverity_e fontSel)
 {
     // display logo and help
-    int fontOffset = 160;
+    /* logo:
+       __     ______     ______     ______  
+     _/  \   /      \   /      \   /      \ 
+    |   $$  |  $$$$$$\ |  $$$$$$\ |  $$$$$$\
+     \$$$$  | $$__/ $$  \$$__| $$ | $$__/ $$
+      | $$   \$$    $$  /      $$  >$$    $$
+      | $$   _\$$$$$$$ |  $$$$$$  |  $$$$$$ 
+     _| $$_ |  \__/ $$ | $$_____  | $$__/ $$
+    |   $$ \ \$$    $$ | $$     \  \$$    $$
+     \$$$$$$  \$$$$$$   \$$$$$$$$   \$$$$$$  
+
+    char legend:
+    " " = 0
+    "$" = 35
+    "-" = 45
+    "/" = 47
+    "|" = 124
+    "_" = 95
+    */
+    #define logo_ascii_len 40*9  
+    int logo_ascii[logo_ascii_len] = {0, 0, 0, 95, 95, 0, 0, 0, 0, 0, 95, 95, 95, 95, 95, 95, 0, 0, 0, 0, 0, 95, 95, 95, 95, 95, 95, 0, 0, 0, 0, 0, 95, 95, 95, 95, 95, 95, 0, 0,
+     0, 95, 47, 0, 0, 92, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 92, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 92, 0, 0, 0, 47, 0, 0, 0, 0, 0, 0, 92, 0,
+     124, 0, 0, 0, 35, 35, 0, 0, 124, 0, 0, 35, 35, 35, 35, 35, 35, 92, 0, 124, 0, 0, 35, 35, 35, 35, 35, 35, 92, 0, 124, 0, 0, 35, 35, 35, 35, 35, 35, 92,
+     0, 92, 35, 35, 35, 35, 0, 0, 124, 0, 35, 35, 95, 95, 47, 0, 35, 35, 0, 0, 92, 35, 35, 95, 95, 124, 0, 35, 35, 0, 124, 0, 35, 35, 95, 95, 47, 0, 35, 35, 0, 0, 124, 0, 35, 35, 0, 0, 0, 92, 35, 35, 0, 0, 0, 0, 35, 35, 0, 0, 47, 0, 0, 0, 0, 0, 0, 35, 35, 0, 0, 62, 35, 35, 0, 0, 0, 0, 35, 35, 0, 0, 124, 0, 35, 35, 0, 0, 0, 95, 92, 35, 35, 35, 35, 35, 35, 35, 0, 124, 0, 0, 35, 35, 35, 35, 35, 35, 0, 0, 124, 0, 0, 35, 35, 35, 35, 35, 35, 0, 0, 95, 124, 0, 35, 35, 95, 0, 124, 0, 0, 92, 95, 95, 47, 0, 35, 35, 0, 124, 0, 35, 35, 95, 95, 95, 95, 95, 0, 0, 124, 0, 35, 35, 95, 95, 47, 0, 35, 35, 124, 0, 0, 0, 35, 35, 0, 92, 0, 92, 35, 35, 0, 0, 0, 0, 35, 35, 0, 124, 0, 35, 35, 0, 0, 0, 0, 0, 92, 0, 0, 92, 35, 35, 0, 0, 0, 0, 35, 35, 0, 92, 35, 35, 35, 35, 35, 35, 0, 0, 92, 35, 35, 35, 35, 35, 35, 0, 0, 0, 92, 35, 35, 35, 35, 35, 35, 35, 35, 0, 0, 0, 92, 35, 35, 35, 35, 35, 35, 0};
+
+    int char_iterator = y-y;
     for (int row = 0; row < OSD_LOGO_ROWS; row++) {
         for (int column = 0; column < OSD_LOGO_COLS; column++) {
-            if (fontOffset <= SYM_END_OF_FONT)
-                displayWriteChar(osdDisplayPort, x + column, y + row, fontSel, fontOffset++);
-        }
+            if (logo_ascii[char_iterator] != 0) {
+                //displayWriteChar(osdDisplayPort, x + column, y + row, fontSel, char_iterator++);
+                displayWriteChar(osdDisplayPort, x + column,  row, fontSel, logo_ascii[char_iterator++]);
+            } else {
+                char_iterator++;
+            }
+        
+        }   
     }
 }
 
